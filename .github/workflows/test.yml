@@ -24,8 +24,6 @@ jobs:
         with:
           micromamba-version: "1.3.1-0"
           init-shell: bash
-          cache-environment: true
-          post-cleanup: "all"
       - name: Install dependencies
         run: micromamba install -y -c conda-forge python=3.8 pytest nomkl pandas pyarrow pytest-xdist
       - name: Run pytest with no multiprocessing
