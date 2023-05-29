@@ -3,6 +3,6 @@ channels:
 dependencies:
   - pytest
   - nomkl
-  - pandas
+  - pandas=2.0.1
   - pyarrow
   - pytest-xdist
