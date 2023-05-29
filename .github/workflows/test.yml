@@ -37,9 +37,9 @@ jobs:
           channels: conda-forge
           channel-priority: true
           environment-file: environment.yml
-          use-mamba:
-      - name: install numpy in base
-        run: conda install numpy -n base -y
+          use-mamba: true
+      - name: install numpy and pandas in base
+        run: conda install numpy pandas -n base -y
       - name: Remove conftest.py
         if: matrix.remove_conftest == 'true'
         run: rm example/conftest.py
