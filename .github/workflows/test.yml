@@ -1,0 +1,35 @@
+name: tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+    - '*'
+
+jobs:
+  test_suite:
+    name: Pytest on ${{ matrix.python-version }}, ${{ matrix.os }}
+    needs: [pre_commit]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-latest', 'macos-latest', 'windows-latest']
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+    - uses: mamba-org/setup-micromamba@v1
+      with:
+        micromamba-version: '1.3.1-0'
+        environment-file: environment.yml
+        init-shell: >-
+          bash
+        cache-environment: true
+        post-cleanup: 'all'
+    - name: Run pytest with no multiprocessing
+      run: python -c "pytest tests"
+    - name: Run pytest with multiprocessing
+      run: python -c "pytest -n logical tests"
