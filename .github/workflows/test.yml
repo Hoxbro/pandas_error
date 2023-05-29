@@ -30,6 +30,6 @@ jobs:
           environment-file: environment.yml
           use-mamba: true
       - name: Run pytest with no multiprocessing
-        run: pytest tests
+        run: pytest example
       - name: Run pytest with multiprocessing
-        run: pytest -n logical tests
+        run: pytest -n logical example
