@@ -1,0 +1,8 @@
+channels:
+  - conda-forge
+dependencies:
+  - pytest
+  - nomkl
+  - pandas=2.0.1
+  - pyarrow
+  - pytest-xdist

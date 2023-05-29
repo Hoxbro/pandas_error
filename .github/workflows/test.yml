@@ -1,0 +1,52 @@
+name: tests
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  test_suite:
+    name: Pytest on ${{ matrix.os }}, ${{ matrix.environment_variable }}, ${{ matrix.remove_conftest }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        remove_conftest: [false]
+        environment_variable: [false]
+        # include:
+        #   - os: windows-latest
+        #     remove_conftest: true
+        #     environment_variable: false
+        #   - os: windows-latest
+        #     remove_conftest: false
+        #     environment_variable: true
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash -el {0}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: "3.8"
+          mamba-version: "*"
+          channels: conda-forge
+          channel-priority: true
+          environment-file: environment.yml
+          use-mamba: true
+      - name: install numpy and pandas in base
+        run: conda install numpy pandas -n base -y
+      - name: Remove conftest.py
+        if: matrix.remove_conftest == 'true'
+        run: rm example/conftest.py
+      - name: Add environment variable
+        if: matrix.environment_variable == 'true'
+        run: echo "export OMP_NUM_THREADS=1" >> $GITHUB_ENV
+      - name: Run pytest with no multiprocessing
+        run: pytest example
+      - name: Run pytest with multiprocessing
+        run: pytest -n logical example
